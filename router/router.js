@@ -5,6 +5,8 @@ let router = express.Router();
 
 //导入CateController
 const CateController = require('../controller/CateController.js');
+const ArtController = require('../controller/ArtController.js');
+
 
 router.get('/',(req,res) => {
     res.render("后台系统.html")
@@ -18,7 +20,7 @@ router.get('/from',(req,res) => {
     res.render("layui后台表单.html")
 })
 
-//数据库
+//文章
 router.get('/aeticle',(req,res) => {
     res.render("aeticle-index.html")
 })
@@ -44,6 +46,11 @@ router.get('/catedit',CateController.catedit)
 
 //编辑入库接口
 router.post('/updCate',CateController.updCate)
+
+//获取文章数据接口
+router.get('/allarticle',ArtController.allarticle)
+
+
 
 //暴露路由
 module.exports = router;
