@@ -35,22 +35,26 @@ router.get('/getOneCate',CateController.getOneCate)
 
 //删除接口
 router.post('/delCat',CateController.delCat)
-  
+
 //添加接口
 router.get('/catadd',CateController.catadd)
 //添加到数据库
 router.post('/postCatadd',CateController.postCatadd)
-
 //获取编辑接口
 router.get('/catedit',CateController.catedit)
-
 //编辑入库接口
 router.post('/updCate',CateController.updCate)
 
 //获取文章数据接口
 router.get('/allarticle',ArtController.allarticle)
-
-
+//删除文章数据接口
+router.post('/delArticle',ArtController.delArticle)
+//获取编辑文章数据接口
+router.get('/artedit',ArtController.artedit)
+//获取添加文章数据接口
+router.get('/artadd',ArtController.artadd)
+//添加到数据库接口
+router.post('/postArt',ArtController.postArt)
 
 //暴露路由
-module.exports = router;
+module.exports = router; 

@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
-    <!--引入-->
+   <!--引入-->
     {{ include './common/link.html'}}
     
 </head>
@@ -43,7 +43,7 @@
      
             <div class="layui-form-item">
               <div class="layui-input-block">
-                <button class="layui-btn" lay-submit lay-filter="formDemo">编辑</button>
+                <button class="layui-btn" lay-submit lay-filter="formDemo">提交</button>
                 <button type="reset" class="layui-btn layui-btn-primary">重置</button>
               </div>
             </div>
@@ -55,50 +55,36 @@
     </div>
 </body>
 {{ include './common/scr.html'}}
-
 <script>
-
-//获取表单的参数
-let url = location.href;
-  let reg = /cat_id=(.*)&?/;
-//利用...把伪数组转化为真数组 只要cat_id参数
-let [,cat_id] = [...reg.exec(url)]
-//通过ajax利用获取到的cat_id参数来获取当前那一行的所有参数
- $.ajax({
-  url:"/getOneCate?cat_id="+cat_id,
- }).then((res) => {
-   //获取到参数后要赋值到表单上
-   //解构赋值
-   let {errcode,name,sort,add_date,cat_id} = res;
-   //设置时间的格式 利用了moment.js
-   add_date = moment(add_date).format('YYYY-MM-DD HH:mm:ss')
-   if(errcode == 0 ){
-      //判断后给表单赋值，进行数据回写
-      $("input[name='name']").val(name)
-      $("input[name='sort']").val(sort)
-      $("input[name='add_date']").val(add_date)
-   }
- })
-
-//注意：导航 依赖 element 模块，否则无法进行功能性操作
+    //注意：导航 依赖 element 模块，否则无法进行功能性操作
+    //layui.use(['layer','element'], function(){
+      //var element = layui.element;
+      //var layer = layui.layer
+     // var form = layui.form;
+     // var laydate = layui.laydate;
+  
+      //监听提交
+      //form.on('submit(formDemo)', function(data){
+       // layer.msg(JSON.stringify(data.field));
+     //   return false;
+     // });
+      //时间初始化
+     // laydate.render({
+      //      elem: '#add_date'
+       // });
+    //});
 layui.use(['layer','element','form','laydate'], function(){
     var form = layui.form;
-    var element = layui.element;
-    var layer = layui.layer;
           //监听提交
       form.on('submit(formDemo)', function(data){
         //设置按钮禁用，防止重复点击
         let oldText = data.elem.innerText;
-          $(data.elem).addClass('layui-btn-disabled').text('编辑中..')
-          data = {
-            ...data.field,
-            cat_id
-          }
+        $(data.elem).addClass('layui-btn-disabled').text('添加中....')
         //把数据提交到数据库
         $.ajax({
             type:'post',
-            url:"/updCate",
-            data:data
+            url:"/postCatadd",
+            data:data.field
         }).then((res) => {
             //添加成功后移除禁用按钮
             $(data.elem).removeClass('layui-btn-disabled').text(oldText)
@@ -106,7 +92,7 @@ layui.use(['layer','element','form','laydate'], function(){
            if(errcode == 0){
                //成功
                layer.msg(message)
-               //成功后跳转到category
+               //成功后跳转到catindex
                location.href = "/category"
            }else{
                //失败
@@ -123,12 +109,6 @@ layui.use(['layer','element','form','laydate'], function(){
           type:'datetime'
       });
 });
-
-
-
-
-
-
 
 </script>
 </html>

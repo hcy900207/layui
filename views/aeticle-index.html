@@ -4,7 +4,9 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
-    <link rel="stylesheet" href="/public/layui/css/layui.css">
+     <!--引入-->
+     {{ include './common/link.html'}}
+
 </head>
 <body class="layui-layout-body">
     <div class="layui-layout layui-layout-admin">
@@ -19,9 +21,15 @@
         <!-- 内容主体区域 -->
         <div style="padding: 15px;">
           <h2>文章管理</h2>
+          <div>
+            <button type="button" id="add" class="layui-btn">
+              <i class="layui-icon">&#xe608;</i> 添加
+            </button>
+          </div>
           <table class="layui-hide" id="test" lay-filter="test"></table>
         
           <script type="text/html" id="barDemo">
+            <a class="layui-btn layui-btn-xs" lay-event="show">查看内容</a>
             <a class="layui-btn layui-btn-xs" lay-event="edit">编辑</a>
             <a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="del">删除</a>
           </script>
@@ -32,14 +40,19 @@
       {{ include './common/footer.html'}}
     </div>
 </body>
-<script src="/public/layui/layui.js"></script>
+{{ include './common/scr.html'}}
 <script>
+  
+
     //注意：导航 依赖 element 模块，否则无法进行功能性操作
     layui.use(['element','table'], function(){
       var element = layui.element;
       var table = layui.table;
+
+      //设置时间的格式 利用了moment.js
+      //add_date = moment(add_date).format('YYYY-MM-DD HH:mm:ss')
   
-      table.render({
+      let tablUI =  table.render({
         elem: '#test'
         ,url:'/allarticle'
         ,toolbar: '#toolbarDemo' //开启头部工具栏，并为其绑定左侧模板
@@ -48,16 +61,20 @@
           ,layEvent: 'LAYTABLE_TIPS'
           ,icon: 'layui-icon-tips'
         }]
+        //limit设置是每页显示数据的行数（8行）
+        //limits数组是给浏览者设置每页多少行的
+        ,limit: 8
+        ,limits:[4,8,10,15]
         ,title: '文章数据'
         ,cols: [[
           {type: 'checkbox', fixed: 'left'}
-          ,{field:'art-id', title:'ID', width:80, fixed: 'left', unresize: true, sort: true}
+          ,{field:'art_id', title:'ID', width:80, fixed: 'left', unresize: true, sort: true}
           ,{field:'title', title:'标题', width:120, edit: 'text'}
           ,{field:'content', title:'内容', width:120, edit: 'text'}
-          ,{field:'cat-id', title:'所属分类', width:150, edit: 'text' }
+          ,{field:'cat_id', title:'所属分类', width:100, edit: 'text' }
           ,{field:'author', title:'作者', width:80, edit: 'text', sort: true}
           ,{field:'cover', title:'图片', width:100}
-          ,{field:'status', title:'状态',unresize: false,templet:(item) => {
+          ,{field:'status', title:'状态',width:100,unresize: false,templet:(item) => {
             let statusMap = {
               '0':'未发布',
               '1':'已发布',
@@ -65,13 +82,69 @@
             }
             return statusMap[item.status]
           }}
-          ,{field:'publish-data', title:'发布时间', width:80, sort: true}
-          ,{fixed: 'right', title:'操作', toolbar: '#barDemo', width:150}
+          ,{field:'publish_data', title:'发布时间',  sort: true,templet:(item) => {
+            let {publish_date} = item;
+            return publish_date = moment(publish_date).format('YYYY-MM-DD HH:mm:ss')
+          }}
+          ,{fixed: 'right', title:'操作', toolbar: '#barDemo', width:200}
         ]]
         ,page: true
+        //如果后台接口返回的参数与table参数不同，可以利用response重新定义
       })
-     
-    });
+          //监听事件
+       table.on('tool(test)', function(obj){
+            //var checkStatus = table.checkStatus(obj.config.id);
+            //console.log(obj );
+            //解构
+            let {data,event} = obj;
+            let {art_id} = data;
+             switch(event){
+              case "del":
+                del(art_id)
+                break;
+              case "edit":
+                edit(art_id)
+                break;
+            }
+          });
+          
+      //删除
+      function del(art_id) {
+        //引用询问框
+        layer.confirm('确认删除？', {
+          btn: ['删除', '取消'] //按钮
+        }, function () {
+          //发送请求
+           $.ajax({
+             type:"post",
+             url:"/delArticle",
+             data:{art_id},
+             success(errcode,message){
+               //关闭窗口
+                layer.closeAll()
+                if(errcode == 0){
+                  //局部重新加载
+                  tablUI.reload(); 
+                }
+             }
+           })
+        })
+
+        }  
+    
+        //编辑
+      function edit(art_id){ 
+        location.href =`/artedit?art_id=${art_id}`
+      }
+      
+      //添加
+      $("#add").on('click',()=>{
+        location.href = '/artadd'
+      })
+    
+    })
+
+    
     
     </script>
 </html>

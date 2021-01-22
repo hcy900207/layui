@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+   <!--引入-->
+    {{ include './common/link.html'}}
+    
+</head>
+<body class="layui-layout-body">
+    <div class="layui-layout layui-layout-admin">
+        
+       <!--头部栏-->
+     {{ include './common/header.html'}}
+      
+     <!--左边侧边栏-->
+     {{ include './common/side.html'}}
+      
+      <div class="layui-body">
+        <!-- 内容主体区域 -->
+        <div style="padding: 15px;">
+          <h2>添加管理</h2> 
+          <form class="layui-form" action="" lay-filter="formDemo" >
+            <div class="layui-form-item">
+              <label class="layui-form-label">标题</label>
+              <div class="layui-input-block">
+                <input type="text" name='title' required  lay-verify="required" placeholder="请输入标题" autocomplete="off" class="layui-input">
+              </div>
+            </div>
+
+            
+            <div class="layui-form-item">
+              <label class="layui-form-label">文章封面</label>
+              <div class="layui-input-block">
+                <button type="button" class="layui-btn" id="test1">
+                  <i class="layui-icon">&#xe67c;</i>上传图片
+                </button>  
+              </div>
+            </div>
+ 
+
+            <div class="layui-form-item">
+              <label class="layui-form-label">所属分类</label>
+              <div class="layui-input-block">
+                <select id="cat_id" name="cat_id" lay-verify="required">
+                  <option value=""></option>
+                  <option value="0"></option>
+                  <option value="1"></option>
+                  <option value="2"></option>
+                  <option value="3"></option>
+                </select>
+              </div> 
+            </div>
+            <div class="layui-form-item">
+              <label class="layui-form-label">状态</label>
+              <div class="layui-input-block">
+                <input type="radio" name="status" value="0" title="未发布" checked>
+                <input type="radio" name="status" value="1" title="发布" >
+                <input type="radio" name="status" value="2" title="审核中">
+              </div>
+            </div>
+            <div class="layui-form-item layui-form-text">
+              <label class="layui-form-label">内容</label>
+              <div class="layui-input-block">
+                <textarea name="desc" placeholder="请输入内容" class="layui-textarea"></textarea>
+              </div>
+            </div>> 
+     
+            <div class="layui-form-item">
+              <div class="layui-input-block">
+                <button class="layui-btn" lay-submit lay-filter="formDemo">提交</button>
+                <button type="reset" class="layui-btn layui-btn-primary">重置</button>
+              </div>
+            </div>
+          </form>
+        </div> 
+      </div>
+      
+      {{ include './common/footer.html'}}
+    </div>
+</body>
+{{ include './common/scr.html'}}
+<script>
+layui.use(['layer','element','form'], function(){
+    var element = layui.element;
+    var layer = layui.layer 
+    var form = layui.form;
+          //监听提交
+      form.on('submit(formDemo)', function(data){
+       let formData = data.field;
+       $.post('/postArt',formData,(errcode,message) => {
+        if(errcode == 0){
+          location.href = '/aeticle'
+        }
+        layer.msg(message)
+       },'json')
+        return false;
+      });
+      //获取所有分类
+      function loadCat(){
+         $.get('/getCate',(res) => {
+           let optionStr = `<option value=""></option>`
+          res.forEach(v=> {
+            optionStr += `<option value="${v.cat_id}">${v.name}</option>`
+          })
+          $("#cat_id").html(optionStr)
+          form.render();
+         },'json')
+        
+      }
+      loadCat();
+
+      //表单赋值
+      //form.val('formDemo',{
+      //  name:"你好",
+      //  status: 2,
+      //  cat_id:3,
+      //})
+   
+});
+
+</script>
+</html>

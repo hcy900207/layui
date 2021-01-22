@@ -4,7 +4,9 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
-    <link rel="stylesheet" href="/public/layui/css/layui.css">
+   <!--引入-->
+    {{ include './common/link.html'}}
+    
 </head>
 <body class="layui-layout-body">
     <div class="layui-layout layui-layout-admin">
@@ -52,8 +54,7 @@
       {{ include './common/footer.html'}}
     </div>
 </body>
-<script src="/public/layui/layui.js"></script>
-<script src="https://cdn.bootcdn.net/ajax/libs/jquery/3.5.1/jquery.js"></script>
+{{ include './common/scr.html'}}
 <script>
     //注意：导航 依赖 element 模块，否则无法进行功能性操作
     //layui.use(['layer','element'], function(){
