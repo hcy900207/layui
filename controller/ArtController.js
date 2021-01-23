@@ -28,7 +28,6 @@ ArtController.allarticle = async (req,res) => {
     }
     res.json (response)
 }
-
 //文章删除控制器（方法）
 ArtController.delArticle = async (req,res) => {
     //解构
@@ -42,19 +41,21 @@ ArtController.delArticle = async (req,res) => {
         res.json({delfail})
     }
 }
+/*
 //文章编辑控制器
 ArtController.artedit = (req,res) => {
     res.render('aeticle-edit.html')
 }
+*/
+
 //文章添加控制器
 ArtController.artadd = (req,res) => {
     res.render('aeticle-add.html')
 }
 //提交数据库
-ArtController.postArt = async (req,res) => {
+ArtController.postAdd = async(req,res) => {
     let {title,cat_id,status,content} = req.body;
-    let sql =
-    `insert into article(title,content,status,cat_id)
+    let sql =`insert into article(title,content,status,cat_id)
     values('${title}','${content}','${status}','${cat_id}')
     `;
     let result = await dbquery(sql)
@@ -65,6 +66,8 @@ ArtController.postArt = async (req,res) => {
         res.json({errcode:10009,message:"编写失败"})
     }
 }
+
+
 
 //导出
 module.exports = ArtController;

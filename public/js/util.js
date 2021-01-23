@@ -1,25 +1,23 @@
-//工具函数
 (function(window,undefined){
-    function startNProgress() {
-        //加载进度条
+    
+    function startNProgress(){
         NProgress.set(0.4)
-        let interval = setInterval(function () {
+        let interval = setInterval(function(){
             NProgress.inc();
-        }, 200)
-        $(window).on('load', () => {
+        },200)
+        $(window).on('load',() => {
             clearInterval(interval)
             NProgress.done()
         })
-    }    
+    }
     startNProgress();
 
     let util = {
-        date_fromat:function(date,fromat="YYYY-MM-DD HH:mm:ss"){
-            return moment(date).fromat(fromat)
+        date_format:function(date,format="YYYY-MM-DD HH:mm:ss"){
+            return moment(date).format(format)
         }
     }
 
-    //暴露全局
+    // 暴露给全局
     window.util = util;
 })(window)
-

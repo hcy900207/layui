@@ -63,7 +63,7 @@
             <div class="layui-form-item layui-form-text">
               <label class="layui-form-label">内容</label>
               <div class="layui-input-block">
-                <textarea name="desc" placeholder="请输入内容" class="layui-textarea"></textarea>
+                <textarea name="content" placeholder="请输入内容" class="layui-textarea"></textarea>
               </div>
             </div>> 
      
@@ -84,18 +84,21 @@
 <script>
 layui.use(['layer','element','form'], function(){
     var element = layui.element;
-    var layer = layui.layer 
+    var layer = layui.layer;
     var form = layui.form;
           //监听提交
-      form.on('submit(formDemo)', function(data){
-       let formData = data.field;
-       $.post('/postArt',formData,(errcode,message) => {
-        if(errcode == 0){
-          location.href = '/aeticle'
-        }
-        layer.msg(message)
+      form.on('submit(formDemo)', function(data){ 
+        
+      let formData = data.field;
+       $.post('/postAdd',formData,({errcode,message}) => {
+       if(errcode == 0){
+         location.href = '/aeticle'
+       }
+       layer.msg(message)
        },'json')
         return false;
+      
+        
       });
       //获取所有分类
       function loadCat(){

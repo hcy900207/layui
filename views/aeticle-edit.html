@@ -77,37 +77,10 @@ layui.use(['layer','element','form','laydate'], function(){
     var form = layui.form;
           //监听提交
       form.on('submit(formDemo)', function(data){
-        //设置按钮禁用，防止重复点击
-        let oldText = data.elem.innerText;
-        $(data.elem).addClass('layui-btn-disabled').text('添加中....')
-        //把数据提交到数据库
-        $.ajax({
-            type:'post',
-            url:"/postCatadd",
-            data:data.field
-        }).then((res) => {
-            //添加成功后移除禁用按钮
-            $(data.elem).removeClass('layui-btn-disabled').text(oldText)
-           let {errcode,message} = res;
-           if(errcode == 0){
-               //成功
-               layer.msg(message)
-               //成功后跳转到catindex
-               location.href = "/category"
-           }else{
-               //失败
-               layer.msg(message)
-           }
-        })
-        //阻止跳转
-        return false;
+        
+        
       });
-   //时间初始化
-      var laydate = layui.laydate;
-      laydate.render({
-          elem: '#add_date',
-          type:'datetime'
-      });
+
 });
 
 </script>

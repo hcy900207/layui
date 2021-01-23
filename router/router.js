@@ -49,12 +49,16 @@ router.post('/updCate',CateController.updCate)
 router.get('/allarticle',ArtController.allarticle)
 //删除文章数据接口
 router.post('/delArticle',ArtController.delArticle)
-//获取编辑文章数据接口
+/*
+    //获取编辑文章数据接口
 router.get('/artedit',ArtController.artedit)
+*/
+
 //获取添加文章数据接口
 router.get('/artadd',ArtController.artadd)
 //添加到数据库接口
-router.post('/postArt',ArtController.postArt)
+router.post('/postAdd',ArtController.postAdd)
+
 
 //暴露路由
 module.exports = router; 
