@@ -3,6 +3,10 @@ let express = require('express');
 //获取路由器
 let router = express.Router();
 
+//引入multer
+var multer  = require('multer')
+var upload = multer({ dest: 'uploads/' })
+
 //导入CateController
 const CateController = require('../controller/CateController.js');
 const ArtController = require('../controller/ArtController.js');
@@ -49,6 +53,10 @@ router.post('/updCate',CateController.updCate)
 router.get('/allarticle',ArtController.allarticle)
 //删除文章数据接口
 router.post('/delArticle',ArtController.delArticle)
+//修改文章状态是否发布的接口
+router.post('/updStaus',ArtController.updStaus)
+
+
 /*
     //获取编辑文章数据接口
 router.get('/artedit',ArtController.artedit)
@@ -58,6 +66,9 @@ router.get('/artedit',ArtController.artedit)
 router.get('/artadd',ArtController.artadd)
 //添加到数据库接口
 router.post('/postAdd',ArtController.postAdd)
+
+//引入multer上传文件接口
+router.post('/upload',upload.single('file'),ArtController.upload)
 
 
 //暴露路由

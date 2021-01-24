@@ -6,6 +6,7 @@
     <title>Document</title>
      <!--引入-->
      {{ include './common/link.html'}}
+     <link rel="stylesheet" href="/public/css/lightbox.css">
 
 </head>
 <body class="layui-layout-body">
@@ -27,12 +28,15 @@
             </button>
           </div>
           <table class="layui-hide" id="test" lay-filter="test"></table>
-        
+        <!--
           <script type="text/html" id="barDemo">
             <a class="layui-btn layui-btn-xs" lay-event="show">查看内容</a>
             <a class="layui-btn layui-btn-xs" lay-event="edit">编辑</a>
             <a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="del">删除</a>
           </script>
+
+        -->
+          
         
         </div>
       </div>
@@ -41,6 +45,7 @@
     </div>
 </body>
 {{ include './common/scr.html'}}
+<script src="/public/js/lightbox-plus-jquery.min.js"></script>
 <script>
   
 
@@ -68,27 +73,50 @@
         ,title: '文章数据'
         ,cols: [[
           {type: 'checkbox', fixed: 'left'}
-          ,{field:'art_id', title:'ID', width:80, fixed: 'left', unresize: true, sort: true}
-          ,{field:'title', title:'标题', width:120, edit: 'text'}
-          ,{field:'content', title:'内容', width:120, edit: 'text'}
-          ,{field:'cat_id', title:'所属分类', width:100, edit: 'text' }
-          ,{field:'author', title:'作者', width:80, edit: 'text', sort: true}
-          ,{field:'cover', title:'图片', width:100}
-          ,{field:'status', title:'状态',width:100,unresize: false,templet:(item) => {
+          ,{field:'art_id', title:'ID', fixed: 'left', unresize: true, sort: true}
+          ,{field:'title', title:'标题',edit: 'text'}
+          ,{field:'content', title:'内容',edit: 'text'}
+          ,{field:'name', title:'所属分类',edit: 'text' }
+          ,{field:'author', title:'作者',edit: 'text', sort: true}
+          ,{field:'cover', title:'图片',templet({cover}){
+            //解构返回图片
+            let imgStr = `<a class="example-image-link" href="${cover}" data-lightbox="example-1" data-title="我帅木">
+                              <img class="example-image" src="${cover}" alt="暂无图片" />
+                          </a> `
+            return imgStr;
+          }}
+          ,{field:'status', title:'状态',unresize: false,templet:(item) => {
             let statusMap = {
-              '0':'未发布',
-              '1':'已发布',
-              '2':"审核中",
+              '0':'<span class="layui-badge layui-bg-green">未发布</span>',
+              '1':'<span class="layui-badge layui-bg-cyan">已发布</span>',
+              '2':'<span class="layui-badge layui-bg-blue">不通过</span>',
             }
             return statusMap[item.status]
           }}
-          ,{field:'publish_data', title:'发布时间',  sort: true,templet:(item) => {
+          ,{field:'publish_data', title:'发布时间',width:180,sort: true,templet:(item) => {
             let {publish_date} = item;
             return publish_date = moment(publish_date).format('YYYY-MM-DD HH:mm:ss')
           }}
-          ,{fixed: 'right', title:'操作', toolbar: '#barDemo', width:200}
+          ,{fixed: 'right', title:'操作', width:250,templet({status}){
+            let temStr =`<a class="layui-btn layui-btn-xs" lay-event="show">查看内容</a>`;
+            //根据状态来操作
+            switch(status){
+              //未发布
+              case 0 :
+              temStr +=`<a class="layui-btn layui-btn-xs layui-bg-orange" lay-event="verify">待审核</a>`;
+              break;
+              default:
+              break;
+            }
+            temStr += 
+            `
+            <a class="layui-btn layui-btn-xs" lay-event="edit">编辑</a>
+            <a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="del">删除</a>
+            `
+            return temStr;
+          }}
         ]]
-        ,page: true
+          ,page: true
         //如果后台接口返回的参数与table参数不同，可以利用response重新定义
       })
           //监听事件
@@ -99,11 +127,20 @@
             let {data,event} = obj;
             let {art_id} = data;
              switch(event){
+               //删除
               case "del":
                 del(art_id)
                 break;
+                
+                //编辑
               case "edit":
                 edit(art_id)
+                break;
+              
+              
+              //审核
+              case "verify":
+                verify(art_id)
                 break;
             }
           });
@@ -137,8 +174,32 @@
         location.href =`/artedit?art_id=${art_id}`
       }
     */
-       
-      
+
+      //文章更新状态    
+      function updArtStatus(art_id,status){
+        $.post('/updStaus',{art_id,status},(errcode,message) => {
+          if(errcode == 0){
+            tablUI.reload();
+          }
+           layer.msg(message)
+        },'json')
+      }
+
+      //审核
+      function verify(art_id){
+        //询问框
+        layer.confirm('是否通过', {
+          btn: ['通过','取消'] //按钮
+        }, function(){
+          //通过改为1
+          updArtStatus(art_id,1)
+        }, function(){
+          //不通过改为2
+          updArtStatus(art_id,2)
+        });
+      }
+    
+
       //添加
       $("#add").on('click',()=>{
         location.href = '/artadd'

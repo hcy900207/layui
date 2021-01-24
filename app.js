@@ -10,6 +10,10 @@ app.use(express.urlencoded({ extended: true })) // for parsing application/x-www
 
 //中间件托管
 app.use('/public',express.static(path.join(__dirname,'public')));
+//图片中间件
+app.use('/uploads',express.static(path.join(__dirname,'uploads')));
+
+
 
 //模板引擎引入
 const artTemplate = require('art-template'); 

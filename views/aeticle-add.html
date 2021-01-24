@@ -22,6 +22,8 @@
         <div style="padding: 15px;">
           <h2>添加管理</h2> 
           <form class="layui-form" action="" lay-filter="formDemo" >
+            <!--隐藏域-->
+            <input type="hidden" name="cover" id="">
             <div class="layui-form-item">
               <label class="layui-form-label">标题</label>
               <div class="layui-input-block">
@@ -33,11 +35,18 @@
             <div class="layui-form-item">
               <label class="layui-form-label">文章封面</label>
               <div class="layui-input-block">
-                <button type="button" class="layui-btn" id="test1">
+                <button type="button" class="layui-btn" id="cover_img_uploap">
                   <i class="layui-icon">&#xe67c;</i>上传图片
                 </button>  
               </div>
-            </div>
+            </div> 
+
+            <div class="layui-form-item">
+              <label class="layui-form-label">封面预览</label>
+              <div class="layui-input-block">
+                <img src="" alt="" id="cover-preview">
+              </div>
+            </div> 
  
 
             <div class="layui-form-item">
@@ -82,10 +91,28 @@
 </body>
 {{ include './common/scr.html'}}
 <script>
-layui.use(['layer','element','form'], function(){
+layui.use(['layer','element','form','upload'], function(){
     var element = layui.element;
     var layer = layui.layer;
     var form = layui.form;
+    var upload = layui.upload;
+   
+        //执行实例
+        var uploadInst = upload.render({
+          elem: '#cover_img_uploap' //绑定元素
+          , url: '/upload' //上传接口
+          , done: function ({code,message,src}) {
+            //上传完毕回调
+            if(code == 0){
+              //预览图片，并把图片路径设置到表单隐藏域提交到后台
+              $('#cover-preview').attr('src',src).css('width','100')
+              $('input[name="cover"]').val(src)
+            }
+          }
+          , error: function () {
+            //请求异常回调
+          }
+        });
           //监听提交
       form.on('submit(formDemo)', function(data){ 
         
