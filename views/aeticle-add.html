@@ -72,7 +72,7 @@
             <div class="layui-form-item layui-form-text">
               <label class="layui-form-label">内容</label>
               <div class="layui-input-block">
-                <textarea name="content" placeholder="请输入内容" class="layui-textarea"></textarea>
+                <div id="content"></div>  
               </div>
             </div>> 
      
@@ -90,7 +90,15 @@
     </div>
 </body>
 {{ include './common/scr.html'}}
+<script src="https://cdn.jsdelivr.net/npm/wangeditor@latest/dist/wangEditor.min.js"></script>
 <script>
+
+    const E = window.wangEditor;
+    const editor = new E('#content');
+    //注意本地文件过大可能传不了哦
+    editor.config.uploadImgShowBase64 = true;
+    editor.create();
+
 layui.use(['layer','element','form','upload'], function(){
     var element = layui.element;
     var layer = layui.layer;
@@ -115,8 +123,9 @@ layui.use(['layer','element','form','upload'], function(){
         });
           //监听提交
       form.on('submit(formDemo)', function(data){ 
-        
       let formData = data.field;
+      //获取富文本编辑器
+      formData.content = editor.txt.html();
        $.post('/postAdd',formData,({errcode,message}) => {
        if(errcode == 0){
          location.href = '/aeticle'
