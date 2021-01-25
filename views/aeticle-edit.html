@@ -20,67 +20,178 @@
       <div class="layui-body">
         <!-- 内容主体区域 -->
         <div style="padding: 15px;">
-          <h2>编辑管理</h2>
-          <form class="layui-form" action="">
+          <h2>编辑管理</h2> 
+          <form class="layui-form" action="" lay-filter="formDemo" >
+            <!--隐藏域-->
+            <input type="hidden" name="cover" id="">
             <div class="layui-form-item">
-              <label class="layui-form-label">分类名称</label>
+              <label class="layui-form-label">标题</label>
               <div class="layui-input-block">
-                <input type="text" name='name' required  lay-verify="required" placeholder="请输入标题" autocomplete="off" class="layui-input">
+                <input type="text" name='title' required  lay-verify="required" placeholder="请输入标题" autocomplete="off" class="layui-input">
               </div>
             </div>
+
+            
             <div class="layui-form-item">
-                <label class="layui-form-label">排序</label>
-                <div class="layui-input-block">
-                  <input type="number" name="sort" required  lay-verify="required" placeholder="请输入标题" autocomplete="off" class="layui-input">
-                </div>
-            </div>
+              <label class="layui-form-label">文章封面</label>
+              <div class="layui-input-block">
+                <button type="button" class="layui-btn" id="cover_img_uploap">
+                  <i class="layui-icon">&#xe67c;</i>上传图片
+                </button>  
+              </div>
+            </div> 
+
             <div class="layui-form-item">
-                <label class="layui-form-label">时间</label>
-                <div class="layui-input-block">
-                  <input type="text" name="add_date" id="add_date" required  lay-verify="required" placeholder="请输入标题"  class="layui-input">
+              <label class="layui-form-label">封面预览</label>
+              <div class="layui-input-block">
+                <img src="" alt="" id="cover-preview">
+              </div>
+            </div> 
+ 
+            <div style="position: relative;">
+              <div class="layui-from-item" style="position: absolute; top: 0; left: 0;z-index: 99999;">
+                <div class="layui-form-item">
+                  <label class="layui-form-label">所属分类</label>
+                  <div class="layui-input-block">
+                    <select id="cat_id" name="cat_id" lay-verify="required">
+                      <option value=""></option>
+                      <option value="0"></option>
+                      <option value="1"></option>
+                      <option value="2"></option>
+                      <option value="3"></option>
+                    </select>
+                  </div>
                 </div>
+              </div>
             </div>
+            
+           
+            <div class="layui-form-item" style="margin: 80px 0;">
+              <label class="layui-form-label">状态</label>
+              <div class="layui-input-block">
+                <input type="radio" name="status" value="0" title="未发布" checked>
+                <input type="radio" name="status" value="1" title="发布" >
+                <input type="radio" name="status" value="2" title="审核中">
+              </div>
+            </div>
+            <div class="layui-form-item layui-form-text">
+              <label class="layui-form-label">内容</label>
+              <div class="layui-input-block">
+                <div id="content"></div>  
+              </div>
+            </div>> 
      
             <div class="layui-form-item">
               <div class="layui-input-block">
-                <button class="layui-btn" lay-submit lay-filter="formDemo">提交</button>
+                <button class="layui-btn" lay-submit lay-filter="formDemo">编辑</button>
                 <button type="reset" class="layui-btn layui-btn-primary">重置</button>
               </div>
             </div>
           </form>
-        </div>
+        </div> 
       </div>
       
       {{ include './common/footer.html'}}
     </div>
 </body>
 {{ include './common/scr.html'}}
+<script src="https://cdn.jsdelivr.net/npm/wangeditor@latest/dist/wangEditor.min.js"></script>
 <script>
-    //注意：导航 依赖 element 模块，否则无法进行功能性操作
-    //layui.use(['layer','element'], function(){
-      //var element = layui.element;
-      //var layer = layui.layer
-     // var form = layui.form;
-     // var laydate = layui.laydate;
-  
-      //监听提交
-      //form.on('submit(formDemo)', function(data){
-       // layer.msg(JSON.stringify(data.field));
-     //   return false;
-     // });
-      //时间初始化
-     // laydate.render({
-      //      elem: '#add_date'
-       // });
-    //});
-layui.use(['layer','element','form','laydate'], function(){
+    //获取地址栏参数
+    let url = location.href;
+    let reg = /art_id=(.*)&?/;
+    //利用...把伪数组转化为真数组 只要cat_id参数
+    let [,art_id] = [...reg.exec(url)]  
+    
+
+    const E = window.wangEditor;
+    const editor = new E('#content');
+    //注意本地文件过大可能传不了哦这
+    editor.config.uploadImgShowBase64 = true;
+    editor.create();
+
+    layui.use(['layer','element','form','upload'], function(){
+    var element = layui.element;
+    var layer = layui.layer;
     var form = layui.form;
-          //监听提交
-      form.on('submit(formDemo)', function(data){
-        
+    var upload = layui.upload;
+   
+      //执行实例
+      var uploadInst = upload.render({
+          elem: '#cover_img_uploap' //绑定元素
+          , url: '/upload' //上传接口
+          , done: function ({code,message,src}) {
+            //上传完毕回调
+            if(code == 0){
+              //预览图片，并把图片路径设置到表单隐藏域提交到后台
+              $('#cover-preview').attr('src',src).css('width','100')
+              $('input[name="cover"]').val(src)
+            }
+          }
+          , error: function () {
+            //请求异常回调
+          }
+        });
+      //监听提交
+      form.on('submit(formDemo)', function(data){ 
+      let formData = data.field; 
+      //获取富文本编辑器
+      formData.content = editor.txt.html();
+      //设置编辑文章的ID
+      formData.art_id = art_id;
+      formData.oldCove = oldCove;
+       $.post('/updArt',formData,({errcode,message}) => {
+       if(errcode == 0){
+         location.href = '/aeticle'
+       }
+       layer.msg(message)
+       },'json')
+        return false;
+      
         
       });
+      //获取所有分类
+      function loadCat(){
+         $.get('/getCate',(res) => {
+           let optionStr = `<option value=""></option>`
+          res.forEach(v=> {
+            optionStr += `<option value="${v.cat_id}">${v.name}</option>`
+          })
+          $("#cat_id").html(optionStr)
+          form.render();
+        
+          getEditArt();
 
+
+         },'json')
+        
+      }
+      loadCat();
+
+      let oldCove;
+      //等待所有分类加载成功
+      function getEditArt(){
+            //发送ajax请求回显数据
+            $.get('/getOneArt',{art_id},(res) => { 
+              //解构
+              let {title,content,status,cover,cat_id} = res; 
+              cover && $('#cover-preview').attr('src',cover)
+              oldCove = cover;
+              editor.txt.html(content)
+              //表单赋值
+              form.val('formDemo',{
+                title,status,cat_id
+              })
+            },'json')
+          }
+
+      //表单赋值
+      //form.val('formDemo',{
+      //  name:"你好",
+      //  status: 2,
+      //  cat_id:3,
+      //})
+   
 });
 
 </script>

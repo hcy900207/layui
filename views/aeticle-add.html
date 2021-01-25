@@ -48,20 +48,25 @@
               </div>
             </div> 
  
-
-            <div class="layui-form-item">
-              <label class="layui-form-label">所属分类</label>
-              <div class="layui-input-block">
-                <select id="cat_id" name="cat_id" lay-verify="required">
-                  <option value=""></option>
-                  <option value="0"></option>
-                  <option value="1"></option>
-                  <option value="2"></option>
-                  <option value="3"></option>
-                </select>
-              </div> 
+            <div style="position: relative;">
+              <div class="layui-from-item" style="position: absolute; top: 0; left: 0;z-index: 99999;">
+                <div class="layui-form-item">
+                  <label class="layui-form-label">所属分类</label>
+                  <div class="layui-input-block">
+                    <select id="cat_id" name="cat_id" lay-verify="required">
+                      <option value=""></option>
+                      <option value="0"></option>
+                      <option value="1"></option>
+                      <option value="2"></option>
+                      <option value="3"></option>
+                    </select>
+                  </div>
+                </div>
+              </div>
             </div>
-            <div class="layui-form-item">
+            
+           
+            <div class="layui-form-item" style="margin: 80px 0;">
               <label class="layui-form-label">状态</label>
               <div class="layui-input-block">
                 <input type="radio" name="status" value="0" title="未发布" checked>
@@ -95,7 +100,7 @@
 
     const E = window.wangEditor;
     const editor = new E('#content');
-    //注意本地文件过大可能传不了哦
+    //注意本地文件过大可能传不了哦这
     editor.config.uploadImgShowBase64 = true;
     editor.create();
 

@@ -47,8 +47,6 @@
 {{ include './common/scr.html'}}
 <script src="/public/js/lightbox-plus-jquery.min.js"></script>
 <script>
-  
-
     //注意：导航 依赖 element 模块，否则无法进行功能性操作
     layui.use(['element','table'], function(){
       var element = layui.element;
@@ -119,13 +117,13 @@
           ,page: true
         //如果后台接口返回的参数与table参数不同，可以利用response重新定义
       })
-          //监听事件
-       table.on('tool(test)', function(obj){
+       //监听事件
+      table.on('tool(test)', function(obj){
             //var checkStatus = table.checkStatus(obj.config.id);
             //console.log(obj );
             //解构
             let {data,event} = obj;
-            let {art_id} = data;
+            let {art_id,content} = data;//当前一行的数据
              switch(event){
                //删除
               case "del":
@@ -137,11 +135,16 @@
                 edit(art_id)
                 break;
               
-              
               //审核
               case "verify":
                 verify(art_id)
                 break;
+
+              //查看内容
+              case "show":
+                showContent(content)
+                break;
+
             }
           });
           
@@ -168,13 +171,12 @@
         })
 
         }  
-    /*
-         //编辑
+  
+      //编辑
       function edit(art_id){ 
         location.href =`/artedit?art_id=${art_id}`
       }
-    */
-
+  
       //文章更新状态    
       function updArtStatus(art_id,status){
         $.post('/updStaus',{art_id,status},(errcode,message) => {
@@ -184,7 +186,6 @@
            layer.msg(message)
         },'json')
       }
-
       //审核
       function verify(art_id){
         //询问框
@@ -198,13 +199,22 @@
           updArtStatus(art_id,2)
         });
       }
-    
-
       //添加
       $("#add").on('click',()=>{
         location.href = '/artadd'
       })
-    
+      //查看内容（回显）
+      function showContent(content){
+        //页面层
+        layer.open({
+          type: 1,
+          skin: 'layui-layer-rim', //加上边框
+          area: ['820px', '540px'], //宽高
+          content: "<div style = 'padding:10px'>" + content + "</div>",//内边距
+        });
+      }
+
+
     })
 
     

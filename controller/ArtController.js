@@ -45,13 +45,10 @@ ArtController.delArticle = async (req,res) => {
         res.json({delfail})
     }
 }
-/*
 //文章编辑控制器
 ArtController.artedit = (req,res) => {
     res.render('aeticle-edit.html')
 }
-*/
-
 //文章添加控制器
 ArtController.artadd = (req,res) => {
     res.render('aeticle-add.html')
@@ -89,7 +86,6 @@ ArtController.upload = (req,res)=>{
     
     
 }
-
 //修改文章状态是否发布的接口
 ArtController.updStaus = async (req,res) => {
     //赋值
@@ -97,6 +93,38 @@ ArtController.updStaus = async (req,res) => {
     let sql = `update article set status = ${status} where art_id = ${art_id}`;
     let result = await dbquery(sql);
     if(result.affectedRows){
+        res.json({errcode:0,message:"编写成功"})
+    }else{
+        res.json({errcode:10009,message:"编写失败"})
+    }
+}
+//获取单条文章数据接口
+ArtController.getOneArt = async (req,res) => {
+    //解构
+    let {art_id} = req.query;
+    let sql = `select * from article where art_id = ${art_id}`;
+    let data = await dbquery(sql);
+    res.json(data[0] || {})  
+}
+//编辑文章入库的接口
+ArtController.updArt = async (req,res) => {
+    //接受post数据
+    let {cover,title,cat_id,art_id,content,status,oldCove} = req.body
+       //sql语句
+    let sql 
+    if(cover){
+        //换图
+        sql = `update article set title='${title}',cat_id=${cat_id},cover='${cover}',
+        content='${content}',status=${status} where art_id = ${art_id};`
+    }else{
+        //保留
+        sql = `update article set title='${title}',cat_id=${cat_id},
+        content='${content}',status=${status} where art_id = ${art_id};`
+    }
+    let result = await dbquery(sql);
+    if(result.affectedRows){
+        //成功之后
+        cover && fs.unlinkSync(oldCove)
         res.json({errcode:0,message:"编写成功"})
     }else{
         res.json({errcode:10009,message:"编写失败"})

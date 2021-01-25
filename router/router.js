@@ -56,20 +56,18 @@ router.post('/delArticle',ArtController.delArticle)
 //修改文章状态是否发布的接口
 router.post('/updStaus',ArtController.updStaus)
 
-
-/*
-    //获取编辑文章数据接口
+//获取编辑文章数据接口
 router.get('/artedit',ArtController.artedit)
-*/
-
 //获取添加文章数据接口
 router.get('/artadd',ArtController.artadd)
 //添加到数据库接口
 router.post('/postAdd',ArtController.postAdd)
-
 //引入multer上传文件接口
 router.post('/upload',upload.single('file'),ArtController.upload)
-
+//获取单条数据库的数据接口
+router.get('/getOneArt',ArtController.getOneArt)
+//编辑文章数据请求
+router.post('/updArt',ArtController.updArt)
 
 //暴露路由
 module.exports = router; 
