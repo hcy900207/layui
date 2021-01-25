@@ -42,6 +42,24 @@ let options = {
 };
 app.use( session(options) )
 
+//在路由之前要关闭权限
+app.use(function(req,res,next){
+    //获取访问的路由
+    let path = req.path.toLowerCase();
+    //获取不需要权限的路由
+    let noCheckAuth = ['/signin','/login','/logout']
+    if(noCheckAuth.includes(path)){
+        //开放
+        next();
+    }else{
+        if(req.session.userInfo){
+            next(); 
+        } else{
+            res.redirect('/login')
+        }
+    }
+});
+
 
 //路由中间件
 app.use(router)

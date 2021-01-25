@@ -51,7 +51,7 @@ ArtController.artedit = (req,res) => {
 }
 //文章添加控制器
 ArtController.artadd = (req,res) => {
-    res.render('aeticle-add.html')
+    res.render('aeticle-add.html') 
 }
 //提交数据库
 ArtController.postAdd = async(req,res) => {
