@@ -10,14 +10,16 @@
     <div class="layui-layout layui-layout-admin">
       
        <!--头部栏-->
-     {{ include './common/header.html'}}
+     {{ include './common/header.html' userInfo}}
       
      <!--左边侧边栏-->
-     {{ include './common/side.html'}}
+     {{ include './common/side.html' }}
       
       <div class="layui-body">
         <!-- 内容主体区域 -->
-        <div style="padding: 15px;">内容主体区域</div>
+        <div style="padding: 15px;">
+        {{userInfo.username}}
+        </div>
       </div>
       
        <!--底部栏-->

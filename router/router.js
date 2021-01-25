@@ -10,10 +10,16 @@ var upload = multer({ dest: 'uploads/' })
 //导入CateController
 const CateController = require('../controller/CateController.js');
 const ArtController = require('../controller/ArtController.js');
+const UserController = require('../controller/UserController.js');
+
 
 
 router.get('/',(req,res) => {
-    res.render("后台系统.html")
+    console.log(req.session.userInfo);
+    let data = {
+        userInfo:req.session.userInfo
+    }
+    res.render("后台系统.html",data)
 })
 
 router.get('/table',(req,res) => {
@@ -68,6 +74,29 @@ router.post('/upload',upload.single('file'),ArtController.upload)
 router.get('/getOneArt',ArtController.getOneArt)
 //编辑文章数据请求
 router.post('/updArt',ArtController.updArt)
+
+
+//login 登录页面
+router.get('/login',(req,res) => {
+    //如果有用户信息就能再才访问
+    if(req.session.userInfo){
+        res.redirect('/');
+        return;
+    }
+    res.render('login.html')
+})
+//lohin用户登录路径
+router.post('/signin',UserController.signin)
+//login 页面退出
+router.get('/logout',(req,res) => {
+    //退出清除所有数据
+    req.session.destroy(err =>{
+        if(err){
+            throw err;
+        }
+    })
+    res.render('login.html')
+})
 
 //暴露路由
 module.exports = router; 
