@@ -79,7 +79,7 @@
               <div class="layui-input-block">
                 <div id="content"></div>  
               </div>
-            </div>> 
+            </div>
      
             <div class="layui-form-item">
               <div class="layui-input-block">
@@ -104,65 +104,63 @@
     editor.config.uploadImgShowBase64 = true;
     editor.create();
 
-layui.use(['layer','element','form','upload'], function(){
+  layui.use(['layer', 'element', 'form', 'upload'], function () {
     var element = layui.element;
     var layer = layui.layer;
     var form = layui.form;
     var upload = layui.upload;
-   
-        //执行实例
-        var uploadInst = upload.render({
-          elem: '#cover_img_uploap' //绑定元素
-          , url: '/upload' //上传接口
-          , done: function ({code,message,src}) {
-            //上传完毕回调
-            if(code == 0){
-              //预览图片，并把图片路径设置到表单隐藏域提交到后台
-              $('#cover-preview').attr('src',src).css('width','100')
-              $('input[name="cover"]').val(src)
-            }
-          }
-          , error: function () {
-            //请求异常回调
-          }
-        });
-          //监听提交
-      form.on('submit(formDemo)', function(data){ 
+
+    //执行实例
+    var uploadInst = upload.render({
+      elem: '#cover_img_uploap' //绑定元素
+      , url: '/upload' //上传接口
+      , done: function ({ code, message, src }) {
+        //上传完毕回调
+        if (code == 0) {
+          //预览图片，并把图片路径设置到表单隐藏域提交到后台
+          $('#cover-preview').attr('src', src).css('width', '100')
+          $('input[name="cover"]').val(src)
+        }
+      }
+      , error: function () {
+        //请求异常回调
+      }
+    });
+    //监听提交
+    form.on('submit(formDemo)', function (data) {
       let formData = data.field;
       //获取富文本编辑器
       formData.content = editor.txt.html();
-       $.post('/postAdd',formData,({errcode,message}) => {
-       if(errcode == 0){
-         location.href = '/aeticle'
-       }
-       layer.msg(message)
-       },'json')
-        return false;
-      
-        
-      });
-      //获取所有分类
-      function loadCat(){
-         $.get('/getCate',(res) => {
-           let optionStr = `<option value=""></option>`
-          res.forEach(v=> {
-            optionStr += `<option value="${v.cat_id}">${v.name}</option>`
-          })
-          $("#cat_id").html(optionStr)
-          form.render();
-         },'json')
-        
-      }
-      loadCat();
+      $.post('/postAdd', formData, ({ errcode, message }) => {
+        if (errcode == 0) {
+          location.href = '/aeticle'
+        }
+        layer.msg(message)
+      }, 'json')
+      return false;
+    });
+    //获取所有分类
+    function loadCat() {
+      $.get('/getCate', (res) => {
+        let optionStr = `<option value=""></option>`
+        res.forEach(v => {
+          optionStr += `<option value="${v.cat_id}">${v.name}</option>`;
+        })
+        $("#cat_id").html(optionStr);
+        form.render();
+      }, 'json')
 
-      //表单赋值
-      //form.val('formDemo',{
-      //  name:"你好",
-      //  status: 2,
-      //  cat_id:3,
-      //})
-   
-});
+    }
+    loadCat();
+
+    //表单赋值
+    //form.val('formDemo',{
+    //  name:"你好",
+    //  status: 2,
+    //  cat_id:3,
+    //})
+
+  });
 
 </script>
 </html>

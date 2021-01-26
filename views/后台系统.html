@@ -10,15 +10,16 @@
     <div class="layui-layout layui-layout-admin">
       
        <!--头部栏-->
-     {{ include './common/header.html' userInfo}}
+     {{ include './common/header.html'}}
       
      <!--左边侧边栏-->
-     {{ include './common/side.html' }}
+     {{ include './common/side.html'}}
       
       <div class="layui-body">
         <!-- 内容主体区域 -->
         <div style="padding: 15px;">
-        {{userInfo.username}}
+          <h2>首页</h2>
+          <div id="cate" style="width: 600px;height:400px;"></div>
         </div>
       </div>
       
@@ -28,12 +29,55 @@
     </div>
 </body>
 <script src="/public/layui/layui.js"></script>
+<script src="/public/js/echarts.js"></script>
 <script>
+   // 获取分类统计的数据
+    $.get('/cateCount',(res)=>{
+    // 成功只有再去渲染图表
+     // 初始化图表
+     let names = []; // 保存分类名称
+     let totals = []; // 保存文章分类的总文章数
+     res.map(v=>{
+      names.push(v.name);
+      totals.push(v.total)
+      initEchart(names,totals);
+    })
+  })
+
+  function initEchart(names,total){
+    // 基于准备好的dom，初始化echarts实例
+    var myChart = echarts.init(document.getElementById('cate'));
+
+    // 指定图表的配置项和数据
+    var option = {
+      title: {
+        text: '文章管理系统'
+      },
+      tooltip: {},
+      legend: {
+        data: ['数量']
+      },
+      xAxis: {
+        data: names
+      },
+      yAxis: {},
+      series: [{
+        name: '文章数',
+        type: 'bar',
+        data: total
+      }]
+    };
+
+    // 使用刚指定的配置项和数据显示图表。
+    myChart.setOption(option);
+  }
+  
+
     //注意：导航 依赖 element 模块，否则无法进行功能性操作
     layui.use('element', function(){
       var element = layui.element;
       
       //…
     });
-    </script>
+</script>
 </html>

@@ -60,7 +60,7 @@
         ,url:'/allarticle'
         ,toolbar: '#toolbarDemo' //开启头部工具栏，并为其绑定左侧模板
         ,defaultToolbar: ['filter', 'exports', 'print', { //自定义头部工具栏右侧图标。如无需自定义，去除该参数即可
-          title: '提示'
+           title: '提示'
           ,layEvent: 'LAYTABLE_TIPS'
           ,icon: 'layui-icon-tips'
         }]
@@ -78,9 +78,9 @@
           ,{field:'author', title:'作者',edit: 'text', sort: true}
           ,{field:'cover', title:'图片',templet({cover}){
             //解构返回图片
-            let imgStr = `<a class="example-image-link" href="${cover}" data-lightbox="example-1" data-title="我帅木">
-                              <img class="example-image" src="${cover}" alt="暂无图片" />
-                          </a> `
+            let imgStr = `<a class="example-image-link" href="${cover}" data-lightbox="example-1" data-title="sb">
+                              <img class="example-image" src="${cover}" alt="暂无图片"/>
+                        </a>`
             return imgStr;
           }}
           ,{field:'status', title:'状态',unresize: false,templet:(item) => {

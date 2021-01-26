@@ -11,15 +11,25 @@ var upload = multer({ dest: 'uploads/' })
 const CateController = require('../controller/CateController.js');
 const ArtController = require('../controller/ArtController.js');
 const UserController = require('../controller/UserController.js');
+const dbquery = require('../util/dbquery.js');
 
+// 统计出分类的文章总数
+router.get('/cateCount',async (req,res)=>{
+    let sql = `select count(*) total ,t2.name,t1.cat_id from article t1 
+                left join category t2 
+                on t1.cat_id = t2.cat_id 
+                group by  t1.cat_id`;
+    let data = await dbquery(sql);   
+    res.json(data)
+})
 
 
 router.get('/',(req,res) => {
-    console.log(req.session.userInfo);
-    let data = {
-        userInfo:req.session.userInfo
-    }
-    res.render("后台系统.html",data)
+    //et data = {
+     //   userInfo:req.session.userInfo
+    //}
+    //res.render("后台系统.html",data)
+    res.render("后台系统.html")
 })
 
 router.get('/table',(req,res) => {

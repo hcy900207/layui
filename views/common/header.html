@@ -18,7 +18,7 @@
       <li class="layui-nav-item">
         <a href="javascript:;">
           <img src="http://t.cn/RCzsdCq" class="layui-nav-img">
-           {{username}} 
+          <span id="username">匿名</span>
         </a>
         <dl class="layui-nav-child">
           <dd><a href="">基本资料</a></dd>
@@ -28,3 +28,10 @@
       <li class="layui-nav-item"><a onclick="return confirm('确认退出?')" href="/logout">退出登录</a></li>
     </ul>
   </div>
+<script src="https://cdn.bootcdn.net/ajax/libs/jquery/3.5.1/jquery.js"></script>
+<script src="/public/layui/layui.all.js"></script>
+  <script>
+    let layer = layui.layer;
+    //用户名
+    document.getElementById('username').innerHTML = localStorage.getItem('username')
+  </script>

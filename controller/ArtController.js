@@ -51,14 +51,18 @@ ArtController.artedit = (req,res) => {
 }
 //文章添加控制器
 ArtController.artadd = (req,res) => {
+    //let data = {
+    //  userInfo:req.session.userInfo
+    //}
     res.render('aeticle-add.html') 
 }
 //提交数据库
 ArtController.postAdd = async(req,res) => {
     let {title,cat_id,status,content,cover} = req.body;
-    let sql =`insert into article(title,content,status,cat_id,cover,publish_data)
-    values('${title}','${content}','${status}','${cat_id}','${cover}','now()')
-    `;
+    let username = req.session.userInfo.username;
+    let sql = `insert into article(title,content,author,cat_id,status,cover,publish_data)
+                values('${title}','${content}','${username}',${cat_id},${status},'${cover}','now()')
+                `;
     let result = await dbquery(sql)
    //判断返回一个结果
    if(result.affectedRows){
@@ -111,7 +115,7 @@ ArtController.updArt = async (req,res) => {
     //接受post数据
     let {cover,title,cat_id,art_id,content,status,oldCove} = req.body
        //sql语句
-    let sql 
+    let sql;
     if(cover){
         //换图
         sql = `update article set title='${title}',cat_id=${cat_id},cover='${cover}',
