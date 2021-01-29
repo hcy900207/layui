@@ -70,7 +70,7 @@ router.get('/allarticle',ArtController.allarticle)
 //删除文章数据接口
 router.post('/delArticle',ArtController.delArticle)
 //修改文章状态是否发布的接口
-router.post('/updStaus',ArtController.updStaus)
+//router.post('/updStaus',ArtController.updStaus)
 
 //获取编辑文章数据接口
 router.get('/artedit',ArtController.artedit)

@@ -91,7 +91,8 @@ ArtController.upload = (req,res)=>{
     
 }
 //修改文章状态是否发布的接口
-ArtController.updStaus = async (req,res) => {
+/*
+    ArtController.updStaus = async (req,res) => {
     //赋值
     let {art_id,status} = req.body;
     let sql = `update article set status = ${status} where art_id = ${art_id}`;
@@ -102,6 +103,8 @@ ArtController.updStaus = async (req,res) => {
         res.json({errcode:10009,message:"编写失败"})
     }
 }
+*/
+
 //获取单条文章数据接口
 ArtController.getOneArt = async (req,res) => {
     //解构
@@ -118,12 +121,12 @@ ArtController.updArt = async (req,res) => {
     let sql;
     if(cover){
         //换图
-        sql = `update article set title='${title}',cat_id=${cat_id},cover='${cover}',
-        content='${content}',status=${status} where art_id = ${art_id};`
+        sql = `update article set title='${title}',content='${content}',cover='${cover}'
+        ,cat_id=${cat_id},status = ${status} where art_id = ${art_id};`
     }else{
         //保留
-        sql = `update article set title='${title}',cat_id=${cat_id},
-        content='${content}',status=${status} where art_id = ${art_id};`
+        sql = `update article set title='${title}',content='${content}'
+        ,cat_id=${cat_id},status = ${status} where art_id = ${art_id};`
     }
     let result = await dbquery(sql);
     if(result.affectedRows){

@@ -119,7 +119,7 @@
       //执行实例
       var uploadInst = upload.render({
           elem: '#cover_img_uploap' //绑定元素
-          , url: '/upload' //上传接口
+          , url: '/upload/' //上传接口
           , done: function ({code,message,src}) {
             //上传完毕回调
             if(code == 0){
@@ -140,6 +140,7 @@
       //设置编辑文章的ID
       formData.art_id = art_id;
       formData.oldCove = oldCove;
+      //发送ajax请求编辑入库
        $.post('/updArt',formData,({errcode,message}) => {
        if(errcode == 0){
          location.href = '/aeticle'
@@ -157,7 +158,7 @@
           res.forEach(v=> {
             optionStr += `<option value="${v.cat_id}">${v.name}</option>`
           })
-          $("#cat_id").html(optionStr)
+          $("#cat_id").html(optionStr);
           form.render();
         
           getEditArt();
@@ -177,7 +178,7 @@
               let {title,content,status,cover,cat_id} = res; 
               cover && $('#cover-preview').attr('src',cover)
               oldCove = cover;
-              editor.txt.html(content)
+              editor.txt.html(content);
               //表单赋值
               form.val('formDemo',{
                 title,status,cat_id

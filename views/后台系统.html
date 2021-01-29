@@ -51,9 +51,16 @@
     // 指定图表的配置项和数据
     var option = {
       title: {
-        text: '文章管理系统'
+        text: '文章管理系统',
+        subtext:"单位：文章数",
+      
       },
-      tooltip: {},
+      tooltip: {
+        axisPointer:{
+          //十字定位
+          type:'cross',
+        }
+      },
       legend: {
         data: ['数量']
       },
@@ -63,8 +70,19 @@
       yAxis: {},
       series: [{
         name: '文章数',
-        type: 'bar',
-        data: total
+        //type：bar为条形图，line为折线图，pie为圆心图
+        type: 'line',
+        data: total,
+        label:{
+          //show条形图显示数据在中间，fontsize为条形图中间数据的字体大小
+          show:true,
+          fonSize: 18,
+          //showBackground 是背景颜色，要搭配backgroundstyle中的color一起使用
+          //showBackground: true,
+          //backgroundStyle:{
+            //color:"black"
+          //}
+        }
       }]
     };
 
