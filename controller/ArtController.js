@@ -11,15 +11,22 @@ const dbquery = require('../util/dbquery.js')
 //获取文章控制器（分页）
 ArtController.allarticle = async (req,res) => {
     //获取查询字符串
-    let {page,limit:pagesize} = req.query;
+    let {page,limit:pagesize,title,status} = req.query;
+    //定义查询条件
+    let where = 'where 1';
+    //有值为真，为真才可以拼接查询条件
+    title && (where += ` and t1.title like '%${title}%'`)
+    status && (where += ` and t1.status='${status}'`)
+
     //编写语句
     let offset = (page - 1) * pagesize;
     let sql = `select t1.*,t2.name from article t1 left join category t2 on t1.cat_id = t2.cat_id
-        order by art_id desc limit ${offset},${pagesize}`;
-    let sql1 = `select count(*) as count from article`
+                ${where}
+                order by t1.art_id desc limit ${offset},${pagesize} `;
+    let sql1 = `select count(*) as count from article t1 ${where}`
     let promise1 = dbquery(sql)
     let promise2 = dbquery(sql1)
-    //实现并行
+    //实现并行 
     let result = await Promise.all([promise1,promise2])
     let data = result[0];
     let count = result[1][0].count;
@@ -113,29 +120,35 @@ ArtController.getOneArt = async (req,res) => {
     let data = await dbquery(sql);
     res.json(data[0] || {})  
 }
-//编辑文章入库的接口
-ArtController.updArt = async (req,res) => {
-    //接受post数据
-    let {cover,title,cat_id,art_id,content,status,oldCove} = req.body
-       //sql语句
+
+
+// 编辑文章数据入库
+ArtController.updArt = async (req,res)=>{
+    //1.接收post数据(校验)
+    let {cover,title,cat_id,art_id,content,status,oldCover} = req.body;
+    //2.执行sql语句
     let sql;
     if(cover){
-        //换图
+        // 有值更新图片，且要删除原图
         sql = `update article set title='${title}',content='${content}',cover='${cover}'
-        ,cat_id=${cat_id},status = ${status} where art_id = ${art_id};`
+                ,cat_id=${cat_id},status = ${status} where art_id = ${art_id};`
     }else{
-        //保留
+        // 没有值，则保留原图片
         sql = `update article set title='${title}',content='${content}'
-        ,cat_id=${cat_id},status = ${status} where art_id = ${art_id};`
+                ,cat_id=${cat_id},status = ${status} where art_id = ${art_id};`
     }
     let result = await dbquery(sql);
+    
+    //3.响应结果
     if(result.affectedRows){
-        //成功之后
-        cover && fs.unlinkSync(oldCove)
+        // 成功之后，删除原图
+        //cover && fs.unlinkSync(oldCover)
         res.json({errcode:0,message:"编写成功"})
     }else{
         res.json({errcode:10009,message:"编写失败"})
+       
     }
+
 }
 
 

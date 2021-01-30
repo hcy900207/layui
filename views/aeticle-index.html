@@ -22,11 +22,7 @@
         <!-- 内容主体区域 -->
         <div style="padding: 15px;">
           <h2>文章管理</h2>
-          <div>
-            <button type="button" id="add" class="layui-btn">
-              <i class="layui-icon">&#xe608;</i> 添加
-            </button>
-          </div>
+          
           <table class="layui-hide" id="test" lay-filter="test"></table>
         <!--
           <script type="text/html" id="barDemo">
@@ -34,8 +30,36 @@
             <a class="layui-btn layui-btn-xs" lay-event="edit">编辑</a>
             <a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="del">删除</a>
           </script>
-
         -->
+        <script type="text/html" id="leftContent">
+          <div class="" style="display:flex ">
+
+            <button type="button" id="add" class="layui-btn">
+              <i class="layui-icon">&#xe608;</i> 添加
+            </button>
+
+            <div class="layui-form-item">
+              <label class="layui-form-label">标题</label>
+              <div class="layui-input-inline">
+                <input type="text" name='title' id="title" required  lay-verify="required" placeholder="请输入标题" autocomplete="off" class="layui-input">
+              </div>
+            </div>  
+
+            <div class="layui-form-item">
+              <label class="layui-form-label">状态</label>
+              <div class="layui-input-inline">
+                <select id="status" name="status" id='status' lay-verify="required">
+                  <option value="">全部</option>
+                  <option value="0">未发布</option>
+                  <option value="1">已发布</option>
+                  <option value="2">不通过</option>
+                </select>
+              </div>
+            </div>  
+
+            <button class="layui-btn" id="search">搜索</button>
+          </div>
+        </script>
           
         
         </div>
@@ -47,8 +71,8 @@
 {{ include './common/scr.html'}}
 <script src="/public/js/lightbox-plus-jquery.min.js"></script>
 <script>
-    //注意：导航 依赖 element 模块，否则无法进行功能性操作
-    layui.use(['element','table'], function(){
+  //注意：导航 依赖 element 模块，否则无法进行功能性操作
+  layui.use(['element','table'], function(){
       var element = layui.element;
       var table = layui.table;
 
@@ -58,7 +82,8 @@
       let tablUI =  table.render({
         elem: '#test'
         ,url:'/allarticle'
-        ,toolbar: '#toolbarDemo' //开启头部工具栏，并为其绑定左侧模板
+        ,id:'testReload'
+        ,toolbar: '#leftContent' //开启头部工具栏，并为其绑定左侧模板
         ,defaultToolbar: ['filter', 'exports', 'print', { //自定义头部工具栏右侧图标。如无需自定义，去除该参数即可
            title: '提示'
           ,layEvent: 'LAYTABLE_TIPS'
@@ -68,6 +93,10 @@
         //limits数组是给浏览者设置每页多少行的
         ,limit: 8
         ,limits:[4,8,10,15]
+        ,where:{
+          a: 2,
+          b: 3
+        }
         ,title: '文章数据'
         ,cols: [[
           {type: 'checkbox', fixed: 'left'}
@@ -213,11 +242,30 @@
           content: "<div style = 'padding:10px'>" + content + "</div>",//内边距
         });
       }
-
-
+    //单击搜索表格数据
+    $('body').on('click','#search',function(){
+      //带上查询条件数据
+      let title = $('#title').val();
+      let status = $('#status').val();
+      //重载表格
+      table.reload('testReload', {
+        page: {
+          curr: 1 //重新从第 1 页开始
+        }
+        ,where: {
+          title,
+          status
+        }
+      });
+      //保留搜索框的搜索条件
+      $('#title').val(title);
+      $('#status').val(status);
+ 
     })
 
+  })
+
     
     
-    </script>
+</script>
 </html>

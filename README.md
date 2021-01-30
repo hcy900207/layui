@@ -110,3 +110,12 @@ GROUP BY
 # 字符串拼接
 select CONCAT(month(publish_date),'月') month,count(*) as total from article  where year(publish_date) = year(now()) group by month(publish_date)
 ```
+## mysql模糊查询
+# 模糊查询:   字段名  like   '%a%'
+# %fs%    查询标题含有 fs字符 
+# fs%    查询标题以fs字符 开头
+# %fs    查询标题以fs字符 结尾
+```js
+select title,status from article where 1 and  title like '%b%' and status = 0;
+```
+- where 1 仅仅是为了拼接多个查询条件，从而避免没有查询条件时的出错。

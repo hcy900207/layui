@@ -4,8 +4,8 @@ let express = require('express');
 let router = express.Router();
 
 //引入multer
-var multer  = require('multer')
-var upload = multer({ dest:'uploads/'})
+var multer  = require('multer');
+let upload = multer({ dest: 'uploads/'})
 
 //导入CateController
 const CateController = require('../controller/CateController.js');
