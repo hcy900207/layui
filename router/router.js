@@ -5,7 +5,7 @@ let router = express.Router();
 
 //引入multer
 var multer  = require('multer')
-var upload = multer({ dest: 'uploads/' })
+var upload = multer({ dest:'uploads/'})
 
 //导入CateController
 const CateController = require('../controller/CateController.js');
@@ -20,6 +20,13 @@ router.get('/cateCount',async (req,res)=>{
                 on t1.cat_id = t2.cat_id 
                 group by  t1.cat_id`;
     let data = await dbquery(sql);   
+    res.json(data)
+})
+//统计出当前每个月的文章总数
+router.get('/artCount',async (req,res) => {
+    let sql = `select month(publish_data) month, count(*) as total from
+	article where year(publish_data) = year (now()) group by month (publish_data)`
+    let data = await dbquery(sql);
     res.json(data)
 })
 

@@ -87,3 +87,26 @@ app.use(function(req,res,next){
 // 使用路由中间件 req.body
 app.use(router)
 ```
+## 时间
+```js
+# 获取今年（当前年）一月份发布的文章
+select title,publish_date from article where month(publish_date) = 1 and year(publish_date) = year(now())
+
+#  获取今年（当前年）一月份发布的文章总数
+select month(publish_date) month,count(*) as total from article where month(publish_date) = 1 and year(publish_date) = year(now())
+
+# 获取今年（当前年）每月份发布的文章总数
+SELECT
+	MONTH (publish_date) MONTH,
+	count(*) AS total
+FROM
+	article
+WHERE  
+	YEAR (publish_date) = YEAR (now())
+GROUP BY
+	MONTH (publish_date)
+
+
+# 字符串拼接
+select CONCAT(month(publish_date),'月') month,count(*) as total from article  where year(publish_date) = year(now()) group by month(publish_date)
+```

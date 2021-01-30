@@ -17,9 +17,10 @@
       
       <div class="layui-body">
         <!-- 内容主体区域 -->
-        <div style="padding: 15px;">
+        <div style="padding: 15px; display: flex;">
           <h2>首页</h2>
           <div id="cate" style="width: 600px;height:400px;"></div>
+          <div id="art" style="width: 600px;height:400px;"></div>
         </div>
       </div>
       
@@ -40,19 +41,34 @@
      res.map(v=>{
       names.push(v.name);
       totals.push(v.total)
-      initEchart(names,totals);
     })
+    let dom = document.getElementById("cate")
+    initEchart(dom,names,totals);
   })
 
-  function initEchart(names,total){
+  // 获取文章统计的数据
+  $.get('/artCount',(res)=>{
+    // 成功只有再去渲染图表
+     // 初始化图表
+     let months = []; // 保存分类名称
+     let totals = []; // 保存文章分类的总文章数
+     res.map(v=>{
+      months.push(v.month + '月');
+      totals.push(v.total)
+    })
+    let dom = document.getElementById("art")
+    initEchart(dom,months,totals);
+  })
+
+  function initEchart(dom,names,total){ 
     // 基于准备好的dom，初始化echarts实例
-    var myChart = echarts.init(document.getElementById('cate'));
+    var myChart = echarts.init(dom);
 
     // 指定图表的配置项和数据
     var option = {
       title: {
-        text: '文章管理系统',
-        subtext:"单位：文章数",
+        text: '管理系统',
+        subtext:"单位：数量",
       
       },
       tooltip: {
