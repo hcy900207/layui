@@ -28,6 +28,13 @@ UserController.signin = async (req,res)=>{
     }
 
 }
+UserController.edit_user = async(req,res)=>{
+    let {username, avatar, account_id} = req.body;
+    let sql = `update users set avatar='${avatar}',account_id='${account_id}' where username='${username}'`
+    let result = await dbquery(sql);
+    if(result.affectedRows) return res.json(editsuccess);
+    res.json(editfail);
+}
 
 
 

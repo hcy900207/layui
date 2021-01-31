@@ -134,20 +134,20 @@
         });
       //监听提交
       form.on('submit(formDemo)', function(data){ 
-      let formData = data.field; 
-      //获取富文本编辑器
-      formData.content = editor.txt.html();
-      //设置编辑文章的ID
-      formData.art_id = art_id;
-      formData.oldCove = oldCove;
-      //发送ajax请求编辑入库
-       $.post('/updArt',formData,({errcode,message}) => {
-       if(errcode == 0){
-         location.href = '/aeticle'
-       }
-       layer.msg(message)
-       },'json')
-        return false;
+        let formData = data.field; 
+        //获取富文本编辑器
+        formData.content = editor.txt.html();
+        //设置编辑文章的ID
+        formData.art_id = art_id;
+        formData.oldCove = oldCove;
+        //发送ajax请求编辑入库
+        $.post('/updArt',formData,({errcode,message}) => {
+          if(errcode == 0){
+            location.href = '/aeticle'
+          }
+          layer.msg(message)
+        },'json')
+          return false;
       
         
       });

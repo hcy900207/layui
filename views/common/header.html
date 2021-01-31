@@ -21,7 +21,7 @@
           <span id="username">匿名</span>
         </a>
         <dl class="layui-nav-child">
-          <dd><a href="">基本资料</a></dd>
+          <dd><a id="information">基本资料</a></dd>
           <dd><a href="">安全设置</a></dd>
         </dl>
       </li>
@@ -30,8 +30,84 @@
   </div>
 <script src="https://cdn.bootcdn.net/ajax/libs/jquery/3.5.1/jquery.js"></script>
 <script src="/public/layui/layui.all.js"></script>
-  <script>
-    let layer = layui.layer;
-    //用户名
+<script>
+  
+layui.use(['layer', 'element', 'form', 'upload'], function(){
+      var element = layui.element;
+      var upload = layui.upload;
+      var layer = layui.layer;
+       //用户名
     document.getElementById('username').innerHTML = localStorage.getItem('username')
-  </script>
+       //基本信息
+ 
+  $('#information').on('click', function () {
+                let username = localStorage.username;
+                let avatar = localStorage.avatar;
+                let nickname = localStorage.nickname;
+                layer.open({
+                    type: 1,
+                    title: '个人资料',
+                    area: ['360px', '480px'], //宽高
+                    content: `<form class="layui-form">
+                        <div id="upload">
+                            <img src="${avatar}" id="avatar" />
+                            <a href="javascript:;" id="_upload_dp" title="上传头像">
+                                <i class="layui-icon">&#xe67c;</i>
+                            </a>
+                            <input type="hidden" name="avatar" value="${avatar}" id="_avatar">
+                        </div>
+                        <div class="layui-form-item">
+                            <label class="layui-form-label">用户名</label>
+                            <div style="padding: 9px 0; color: #999;">${username}</div>
+                        </div>
+                        <div class="layui-form-item">
+                            <label class="layui-form-label">昵称</label>
+                            <div class="layui-input-inline">
+                                <input type="text" name="account_id" autocomplete="off" class="layui-input" value="${nickname}">
+                            </div>
+                        </div>
+                        <div class="layui-form-item" style="margin-top: 40px">
+                            <div class="layui-input-block">
+                                <button class="layui-btn" lay-submit lay-filter="formDemo">保存</button>
+                                <button type="reset" class="layui-btn layui-btn-primary reset-btn">取消</button>
+                            </div>
+                        </div>
+                    </form>`
+                });
+                upload.render({
+                    elem: '#_upload_dp' //绑定元素
+                    , url: '/upload' //上传接口
+                    , data: {
+                        oldFile() {
+                            return $('#_avatar').val();
+                        }
+                    }
+                    , done: function ({ message, src }) {
+                        //上传完毕回调
+                        if (!src) return layer.msg(message);
+                        $('#avatar').attr('src', src);
+                        $('#_avatar').val(src);
+                    }
+                });
+                form.on('submit(formDemo)', function ({ elem, field }) {
+                    let oldHtml = $(elem).html();
+                    $(elem).addClass('layui-btn-disabled').html('保存中...');
+                    $.ajax({
+                        type: 'post',
+                        url: '/edit_user',
+                        data: { ...field, username }
+                    }).then(res => {
+                        $(elem).removeClass('layui-btn-disabled').html(oldHtml);
+                        layer.msg(res.message);
+                        if (!res.code) location.reload();
+                    });
+                    return false;
+                });
+            });
+   
+  
+
+});
+
+  
+</script>
