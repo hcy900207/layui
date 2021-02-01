@@ -18,7 +18,7 @@
     <ul class="layui-nav layui-layout-right">
       <li class="layui-nav-item">
         <a href="javascript:;">
-          <img src="http://t.cn/RCzsdCq" class="layui-nav-img">
+          <img id="avatar" src="" class="layui-nav-img" alt="暂无头像">
           <span id="username">匿名</span>
         </a>
         <dl class="layui-nav-child">
@@ -38,10 +38,13 @@ layui.use(['layer', 'element', 'form', 'upload'], function(){
       var upload = layui.upload;
       var layer = layui.layer;
        //用户名
-    document.getElementById('username').innerHTML = localStorage.getItem('username')
-       //基本信息
- 
-  $('#information').on('click', function () {
+    let userInfo = JSON.parse( localStorage.getItem('userInfo') || "{}");
+    document.getElementById('username').innerHTML = userInfo.username
+    let defaultAvatar = '/publi/images/默认头像.png';
+    document.getElementById('avatar').src = userInfo.avatar || defaultAvatar
+    /*
+    //基本信息
+       $('#information').on('click', function () {
                 let username = localStorage.username;
                 let avatar = localStorage.avatar;
                 let nickname = localStorage.nickname;
@@ -60,12 +63,6 @@ layui.use(['layer', 'element', 'form', 'upload'], function(){
                         <div class="layui-form-item">
                             <label class="layui-form-label">用户名</label>
                             <div style="padding: 9px 0; color: #999;">${username}</div>
-                        </div>
-                        <div class="layui-form-item">
-                            <label class="layui-form-label">昵称</label>
-                            <div class="layui-input-inline">
-                                <input type="text" name="account_id" autocomplete="off" class="layui-input" value="${nickname}">
-                            </div>
                         </div>
                         <div class="layui-form-item" style="margin-top: 40px">
                             <div class="layui-input-block">
@@ -105,6 +102,10 @@ layui.use(['layer', 'element', 'form', 'upload'], function(){
                     return false;
                 });
             });
+      
+  
+    */
+       
    
   
 

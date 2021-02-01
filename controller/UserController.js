@@ -21,20 +21,27 @@ UserController.signin = async (req,res)=>{
         let userInfo = data[0];
         req.session.userInfo = userInfo; 
         // 2.更新此次的登录时间
-        res.json({errcode:0,message:'登录成功'})
+        let sql = `update users set last_login_date=now() where user_id  = ${userInfo.user_id}`;
+        await dbquery(sql)
+        res.json({errcode:0,message:'登录成功',userInfo})
     }else{
         // 匹配失败
         res.json({errcode:10008,message:'用户名或密码错误'})
     }
 
 }
-UserController.edit_user = async(req,res)=>{
+/*
+    UserController.edit_user = async(req,res)=>{
     let {username, avatar, account_id} = req.body;
     let sql = `update users set avatar='${avatar}',account_id='${account_id}' where username='${username}'`
     let result = await dbquery(sql);
     if(result.affectedRows) return res.json(editsuccess);
     res.json(editfail);
 }
+*/
+
+
+
 
 
 
