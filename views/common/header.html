@@ -19,7 +19,7 @@
       <li class="layui-nav-item">
         <a href="javascript:;">
           <img id="avatar" src="" class="layui-nav-img" alt="暂无头像">
-          <span id="username">匿名</span>
+          <span id="username"></span>
         </a>
         <dl class="layui-nav-child">
           <dd><a id="information">基本资料</a></dd>
@@ -40,7 +40,7 @@ layui.use(['layer', 'element', 'form', 'upload'], function(){
        //用户名
     let userInfo = JSON.parse( localStorage.getItem('userInfo') || "{}");
     document.getElementById('username').innerHTML = userInfo.username
-    let defaultAvatar = '/publi/images/默认头像.png';
+    let defaultAvatar='./public/images/默认头像.png';
     document.getElementById('avatar').src = userInfo.avatar || defaultAvatar
     /*
     //基本信息
