@@ -1,37 +1,38 @@
 <link rel="stylesheet" href="/public/css/upd.css">
 <div class="layui-header">
-    <div class="layui-logo">layui 后台布局</div>
-    <!-- 头部区域（可配合layui已有的水平导航） -->
-    <ul class="layui-nav layui-layout-left">
-      <li class="layui-nav-item"><a href="">控制台</a></li>
-      <li class="layui-nav-item"><a href="">商品管理</a></li>
-      <li class="layui-nav-item"><a href="">用户</a></li>
-      <li class="layui-nav-item">
-        <a href="javascript:;">其它系统</a>
-        <dl class="layui-nav-child">
-          <dd><a href="">邮件管理</a></dd>
-          <dd><a href="">消息管理</a></dd>
-          <dd><a href="">授权管理</a></dd>
-        </dl>
-      </li>
-    </ul>
-    <ul class="layui-nav layui-layout-right">
-      <li class="layui-nav-item">
-        <a href="javascript:;">
-          <img id="avatar" src="" class="layui-nav-img" alt="暂无头像">
-          <span id="username"></span>
-        </a>
-        <dl class="layui-nav-child">
-          <dd><a href="javascript:;" onclick="showUserInfo()">基本资料</a></dd>
-          <dd><a href="">安全设置</a></dd>
-        </dl>
-      </li>
-      <li class="layui-nav-item"><a id="logout" href="javascript:;">退出系统</a></li>
-    </ul>
-  </div>
+  <div class="layui-logo">layui 后台布局</div>
+  <!-- 头部区域（可配合layui已有的水平导航） -->
+  <ul class="layui-nav layui-layout-left">
+    <li class="layui-nav-item"><a href="">控制台</a></li>
+    <li class="layui-nav-item"><a href="">商品管理</a></li>
+    <li class="layui-nav-item"><a href="">用户</a></li>
+    <li class="layui-nav-item">
+      <a href="javascript:;">其它系统</a>
+      <dl class="layui-nav-child">
+        <dd><a href="">邮件管理</a></dd>
+        <dd><a href="">消息管理</a></dd>
+        <dd><a href="">授权管理</a></dd>
+      </dl>
+    </li>
+  </ul>
+  <ul class="layui-nav layui-layout-right">
+    <li class="layui-nav-item">
+      <a href="javascript:;">
+        <img id="avatar" src="" class="layui-nav-img" alt="暂无头像">
+        <span id="username"></span>
+      </a>
+      <dl class="layui-nav-child">
+        <dd><a href="javascript:;" onclick="showUserInfo()">基本资料</a></dd>
+        <dd><a href="">安全设置</a></dd>
+      </dl>
+    </li>
+    <li class="layui-nav-item"><a id="logout" href="javascript:;">退出系统</a></li>
+  </ul>
+</div>
 <script src="https://cdn.bootcdn.net/ajax/libs/jquery/3.5.1/jquery.js"></script>
 <script src="/public/layui/layui.all.js"></script>
 <script>
+  let upload;
   //表单
   let userInfoTpl = `
       <form id="userInfoTpl"  class="layui-form" action="" style="padding:20px;">
@@ -58,56 +59,107 @@
             </div>
           </div>
       </form>`;
-    
-    window.onload = function(){
-    let userInfo =  JSON.parse(localStorage.getItem('userInfo') || '{}');
+
+  window.onload = function () {
+    let userInfo = JSON.parse(localStorage.getItem('userInfo') || '{}');
     let avatar = userInfo.avatar || '/public/images/默认头像.png';
     // 登录用户的信息
     document.getElementById('username').innerHTML = userInfo.username
     document.getElementById('avatar').src = avatar
-    //回显信息表单中
+    //数据回显
     $("#form-username").html(userInfo.username)
-    layui.use(['layer','form','upload'],function(){
-        let layer = layui.layer;
-        let form = layui.form;
-        let upload = layui.upload;
-        // 退出
-        document.getElementById('logout').onclick = function(){
-          // 清空session
-          $.get('/logout',(res)=>{
-            // 清空本地存储
-            localStorage.clear();
-            layer.msg(res.message)
-            location.href = '/login'
-          })
-          
+    layui.use(['layer', 'form', 'upload'], function () {
+      let layer = layui.layer;
+      let form = layui.form;
+      upload = layui.upload;
+      // //修改头像
+      // //普通图片上传
+      // var uploadInst = upload.render({ 
+      //   elem: '#uploadAvatar'
+      //   ,url: '/upload' //改成您自己的上传接口
+      //   ,done: function(res){
+      //     //如果上传失败
+      //     if(res.code = 0){
+      //       //预览
+      //       $("#avatar-preview").attr("src",res.src)
+      //       return layer.msg('上传失败');
+      //     }
+      //     //上传成功
+      //   }
+      // });
+
+      // 退出
+      document.getElementById('logout').onclick = function () {
+        // 清空session
+        $.get('/logout', (res) => {
+          // 清空本地存储
+          localStorage.clear();
+          layer.msg(res.message)
+          location.href = '/login'
+        })
+
+      }
+
+
+
+    })
+
+
+
+    // 在一弹出中显示用户的信息
+    function showUserInfo() {
+      //页面层(弹窗)
+      layer.open({
+        title: "用户资料",
+        type: 1,
+        skin: 'layui-layer-rim', //加上边框
+        area: ['500px', '540px'], //宽高
+        // 这样会有两个一样的html结构
+        content: userInfoTpl,
+        // content:['userInfo.html', 'no'],
+        success: function () {
+          // 修改上传头像
+          $("#userInfoTpl").find('#form-username').html(userInfo.username)
+          $("#userInfoTpl #avatar-preview").attr('src', avatar)
+
+          initUpload(upload, layer);
         }
+      });
+    }
+    // 暴露给全局，外面可以调用
+    window['showUserInfo'] = showUserInfo
 
-         // 在一弹出中显示用户的信息
-        function showUserInfo(){
-            //页面层(弹窗)
-            layer.open({
-              title:"用户资料",
-              type: 1,
-              skin: 'layui-layer-rim', //加上边框
-              area: ['720px', '640px'], //宽高
-              // 这样会有两个一样的html结构
-              content: userInfoTpl,
-              // content:['userInfo.html', 'no'],
-              success:function(){
-                // 修改上传头像
-                $("#userInfoTpl").find('#form-username').html(userInfo.username)
-                $("#userInfoTpl #avatar-preview").attr('src',avatar)
-                
-                initUpload(upload,layer);
-              }
-            });
-        }
-        // 暴露给全局，外面可以调用
-        window['showUserInfo'] = showUserInfo
-
-
-      })
   }
-  
- </script>
+
+  //上传头像
+  function initUpload(upload, layer) {
+    // 初始化文件上传组件
+    var uploadInst = upload.render({
+      elem: '#uploadAvatar'
+      , url: '/upload' //改成您自己的上传接口
+      , done: function (res) {
+        //如果上传失败
+        console.log(res)
+        if (res.code == 0) {
+          let src = res.src;
+          $("#avatar-preview").attr('src', src);
+          $.post('/updateImg', { avatar: src }, (res) => {
+            console.log(res)
+            let { code, message } = res;
+            // 改成修改之后的头像
+            if (code == 0) {
+              layer.msg(message);
+              // 返回当前的src
+              $("#avatar-preview").attr('src', src)
+              // 更新头像
+              let oldImg = JSON.parse(localStorage.getItem('userInfo') || '{}')
+              oldImg.avatar = src;
+              localStorage.setItem('userInfo', JSON.stringify(oldImg))
+            }
+          }, 'json')
+        }
+      },
+    });
+  }
+
+</script>

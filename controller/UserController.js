@@ -40,6 +40,20 @@ UserController.signin = async (req,res)=>{
 }
 */
 
+// 更新用户头像
+UserController.updateImg = async (req,res)=>{
+    let {avatar} = req.body;
+    let user_id = req.session.userInfo.user_id;
+    let sql = `update users set avatar = '${avatar}' where user_id = ${user_id}`
+    let result = await dbquery(sql)
+    if(result.affectedRows){
+        // 成功
+        res.json({code:0,message:"修改头像成功"})
+    }else{
+        res.json({code:1,message:"修改头像失败"})
+    }
+}
+
 
 
 

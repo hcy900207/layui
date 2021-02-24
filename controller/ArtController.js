@@ -68,7 +68,7 @@ ArtController.postAdd = async(req,res) => {
     let {title,cat_id,status,content,cover} = req.body;
     let username = req.session.userInfo.username;
     let sql = `insert into article(title,content,author,cat_id,status,cover,publish_data)
-                values('${title}','${content}','${username}',${cat_id},${status},'${cover}','now()')
+                values('${title}','${content}','${username}',${cat_id},${status},'${cover}',now())
                 `;
     let result = await dbquery(sql)
    //判断返回一个结果
@@ -150,6 +150,7 @@ ArtController.updArt = async (req,res)=>{
     }
 
 }
+
 
 
 //导出

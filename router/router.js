@@ -116,6 +116,7 @@ router.get('/logout',(req,res) => {
 })
 
 //router.post('/edit_user',UserController.edit_user)
+router.post('/updateImg',UserController.updateImg)
 
 //暴露路由
 module.exports = router; 
